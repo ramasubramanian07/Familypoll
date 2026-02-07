@@ -1,1 +1,42 @@
+function doPost(e) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
+  
+  if(data.action === 'vote') {
+    // Add new vote to sheet
+    sheet.appendRow([data.name, data.relation, data.choice, new Date()]);
+    return ContentService.createTextOutput(JSON.stringify({success: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  if(data.action === 'getVotes') {
+    // Get all votes from sheet
+    const rows = sheet.getDataRange().getValues();
+    const votes = rows.slice(1).map(row => ({
+      name: row[0],
+      relation: row[1],
+      choice: row[2],
+      timestamp: row[3]
+    }));
+    return ContentService.createTextOutput(JSON.stringify(votes))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
+function doGet(e) {
+  // Handle GET requests same as POST
+  if(e.parameter.action === 'getVotes') {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const rows = sheet.getDataRange().getValues();
+    const votes = rows.slice(1).map(row => ({
+      name: row[0],
+      relation: row[1],
+      choice: row[2],
+      timestamp: row[3]
+    }));
+    return ContentService.createTextOutput(JSON.stringify(votes))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  return ContentService.createTextOutput(JSON.stringify({error: 'Invalid action'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
