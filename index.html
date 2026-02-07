@@ -1,202 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arun & Subbu's Baby Poll</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes leftHeart { 0% { transform: translateX(-120%); opacity: 0; } 100% { transform: translateX(0); opacity: 0.8; } }
-        @keyframes rightHeart { 0% { transform: translateX(120%); opacity: 0; } 100% { transform: translateX(0); opacity: 0.8; } }
-        
-        /* Hearts positioned behind the text and slightly lower */
-        .heart-bg { position: absolute; top: 55%; z-index: -1; font-size: 120px; filter: blur(2px); }
-        #intro-overlay { background: linear-gradient(to right, #ffafbd, #ffc3a0); transition: opacity 1s ease-out; }
-        
-        .selected-boy { background-color: #60a5fa !important; transform: scale(1.2); grayscale: 0 !important; border: 4px solid white; }
-        .selected-girl { background-color: #f472b6 !important; transform: scale(1.2); grayscale: 0 !important; border: 4px solid white; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arun & Subbu's Baby Poll</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+@keyframes leftHeart { 0% { transform: translateX(-120%); opacity: 0; } 100% { transform: translateX(0); opacity: 0.8; } }
+@keyframes rightHeart { 0% { transform: translateX(120%); opacity: 0; } 100% { transform: translateX(0); opacity: 0.8; } }
+@keyframes pulseSoft { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+.heart-bg { position: absolute; top: 55%; z-index: -1; font-size: 120px; filter: blur(2px); }
+
+.boy-btn {
+  color: #2563eb;
+}
+.boy-btn:hover {
+  background:#1e40af;
+  color:white;
+  transform: scale(1.15);
+}
+.girl-btn {
+  color:#ec4899;
+}
+.girl-btn:hover {
+  background:#be185d;
+  color:white;
+  transform: scale(1.15);
+}
+
+.selected-boy {
+  background:#1e3a8a !important;
+  color:white !important;
+  transform: scale(1.25);
+  box-shadow: 0 0 0 6px rgba(37,99,235,0.3);
+}
+.selected-girl {
+  background:#9d174d !important;
+  color:white !important;
+  transform: scale(1.25);
+  box-shadow: 0 0 0 6px rgba(236,72,153,0.3);
+}
+
+#submitStatus {
+  display:none;
+}
+</style>
 </head>
+
 <body class="bg-pink-50 font-sans overflow-x-hidden">
 
-    <div id="intro-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
-        <div class="relative text-center">
-            <div id="intro-names" class="opacity-0 transition-opacity duration-1000">
-                <h1 class="text-5xl font-extrabold text-white drop-shadow-lg">Arunprasad & Subbulakshmi</h1>
-                <p class="text-white text-xl mt-4 font-medium italic">Waiting for our little miracle...</p>
-            </div>
-            <div class="flex justify-center w-full absolute top-0 left-0 right-0 bottom-0 pointer-events-none">
-                <span class="heart-bg" style="animation: leftHeart 2s forwards; left: 10%;">❤️</span>
-                <span class="heart-bg" style="animation: rightHeart 2s forwards; right: 10%;">❤️</span>
-            </div>
-        </div>
-    </div>
+<!-- INTRO -->
+<div id="intro-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-r from-pink-300 to-orange-200">
+  <div class="text-center">
+    <h1 class="text-5xl font-extrabold text-white">Arunprasad & Subbulakshmi</h1>
+    <p class="text-white mt-4 italic">Waiting for our little miracle...</p>
+  </div>
+</div>
 
-    <main id="main-content" class="hidden min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="text-center mb-10">
-            <h2 class="text-4xl font-bold text-pink-600">Family Prediction Poll</h2>
-            <p class="text-gray-500 mt-2">Arun & Subbu's Baby</p>
-        </div>
-        
-        <div class="grid grid-cols-1 gap-6 w-full max-w-sm">
-            <button onclick="showPage('voting-page')" class="bg-blue-400 hover:bg-blue-500 text-white py-8 rounded-3xl shadow-xl transform transition hover:scale-105 font-bold text-2xl">🗳️ Vote for Baby</button>
-            <button onclick="showPage('login-page')" class="bg-purple-400 hover:bg-purple-500 text-white py-8 rounded-3xl shadow-xl transform transition hover:scale-105 font-bold text-2xl">🔐 Admin Login</button>
-        </div>
-    </main>
+<main id="main-content" class="hidden min-h-screen flex flex-col items-center justify-center p-6">
+  <h2 class="text-4xl font-bold text-pink-600 mb-8">Family Prediction Poll</h2>
+  <button onclick="showPage('voting-page')" class="bg-blue-400 text-white py-6 px-10 rounded-3xl text-2xl font-bold mb-4">🗳️ Vote</button>
+  <button onclick="showPage('login-page')" class="bg-purple-400 text-white py-6 px-10 rounded-3xl text-2xl font-bold">🔐 Admin</button>
+</main>
 
-    <section id="voting-page" class="hidden min-h-screen flex flex-col items-center p-6">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md mt-10">
-            <h3 class="text-2xl font-bold text-center text-blue-500 mb-6 italic">Arunprasad & Subbulakshmi</h3>
-            <input id="vName" type="text" placeholder="Your Name" class="w-full mb-4 p-4 border-2 border-pink-100 rounded-2xl outline-none focus:border-pink-400">
-            <input id="vRelation" type="text" placeholder="Relation to Couple" class="w-full mb-6 p-4 border-2 border-pink-100 rounded-2xl outline-none focus:border-pink-400">
-            
-            <p class="text-center font-bold text-gray-600 mb-4">What's your guess?</p>
-            <div class="flex justify-around mb-8">
-                <button onclick="pick('BOY')" id="btn-boy" class="text-6xl p-4 rounded-full grayscale transition-all duration-300">👦</button>
-                <button onclick="pick('GIRL')" id="btn-girl" class="text-6xl p-4 rounded-full grayscale transition-all duration-300">👧</button>
-            </div>
-            
-            <button onclick="handleVote()" class="w-full bg-gradient-to-r from-blue-400 to-pink-400 text-white font-bold py-4 rounded-2xl shadow-lg">Submit Vote</button>
-            <button onclick="location.reload()" class="w-full mt-4 text-gray-400 text-sm">Cancel</button>
-        </div>
-    </section>
+<!-- VOTING -->
+<section id="voting-page" class="hidden min-h-screen flex items-center justify-center p-6">
+<div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-md">
 
-    <section id="login-page" class="hidden min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-sm">
-            <h3 class="text-2xl font-bold text-center text-purple-600 mb-6">Admin Access</h3>
-            <input id="user" type="text" placeholder="Username" class="w-full mb-4 p-4 border-2 border-purple-100 rounded-2xl outline-none">
-            <input id="pass" type="password" placeholder="Password" class="w-full mb-6 p-4 border-2 border-purple-100 rounded-2xl outline-none">
-            <button onclick="doLogin()" class="w-full bg-purple-600 text-white font-bold py-4 rounded-2xl">Open Dashboard</button>
-            <button onclick="location.reload()" class="w-full mt-4 text-gray-400 text-sm">Back to Home</button>
-        </div>
-    </section>
+<h3 class="text-2xl font-bold text-center text-blue-500 mb-4 italic flex justify-center items-center gap-2">
+  👣 Arunprasad & Subbulakshmi 👣
+</h3>
 
-    <section id="admin-dashboard" class="hidden p-6 max-w-4xl mx-auto">
-        <div class="bg-white rounded-3xl p-8 shadow-xl mt-10">
-            <h2 class="text-3xl font-bold text-center text-purple-700 mb-8">Poll Results</h2>
-            
-            <div class="grid grid-cols-2 gap-4 mb-10 text-center">
-                <div class="bg-blue-50 p-6 rounded-2xl"><p class="text-blue-500 font-bold">BOY</p><h1 id="pBoy" class="text-4xl font-black text-blue-600">0%</h1></div>
-                <div class="bg-pink-50 p-6 rounded-2xl"><p class="text-pink-500 font-bold">GIRL</p><h1 id="pGirl" class="text-4xl font-black text-pink-600">0%</h1></div>
-            </div>
+<input id="vName" placeholder="Your Name" class="w-full p-4 border rounded-2xl mb-4">
+<input id="vRelation" placeholder="Relation to Couple" class="w-full p-4 border rounded-2xl mb-6">
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-pink-100">
-                        <tr><th class="p-4 rounded-l-xl">Name</th><th class="p-4">Relation</th><th class="p-4 rounded-r-xl">Selection</th></tr>
-                    </thead>
-                    <tbody id="voterList"></tbody>
-                </table>
-            </div>
-            <button onclick="location.reload()" class="mt-8 bg-gray-200 px-6 py-2 rounded-xl text-gray-600">Logout</button>
-        </div>
-    </section>
+<p class="text-center font-bold mb-4">What's your guess?</p>
 
-    <script>
-        let currentPick = "";
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQiZxUE6Q0HJzFUeEMU9Rudz9THuEiIULOX61O6NlGp4FcS3F-vH6QERs4trIeTgO_lA/exec"; // Replace with your Google Apps Script Web App URL
+<div class="flex justify-around mb-8">
+  <button id="btn-boy" onclick="pick('BOY')" class="boy-btn text-6xl p-4 rounded-full transition-all">👦</button>
+  <button id="btn-girl" onclick="pick('GIRL')" class="girl-btn text-6xl p-4 rounded-full transition-all">👧</button>
+</div>
 
-        // Intro Timing
-        setTimeout(() => { document.getElementById('intro-names').style.opacity = '1'; }, 500);
-        setTimeout(() => {
-            document.getElementById('intro-overlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('intro-overlay').classList.add('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
-            }, 1000);
-        }, 5000);
+<button id="submitBtn" onclick="handleVote()" class="w-full bg-gradient-to-r from-blue-500 to-pink-500 text-white font-bold py-4 rounded-2xl">
+Submit Vote
+</button>
 
-        function showPage(pageId) {
-            document.querySelectorAll('main, section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
-        }
+<p id="submitStatus" class="text-center mt-4 font-bold text-green-500 animate-pulse">Submitting your vote...</p>
 
-        // Issue 3: Highlight logic
-        function pick(val) {
-            currentPick = val;
-            document.getElementById('btn-boy').classList.remove('selected-boy');
-            document.getElementById('btn-girl').classList.remove('selected-girl');
-            
-            if(val === 'BOY') document.getElementById('btn-boy').classList.add('selected-boy');
-            else document.getElementById('btn-girl').classList.add('selected-girl');
-        }
+</div>
+</section>
 
-        async function handleVote() {
-            const name = document.getElementById('vName').value.trim();
-            const rel = document.getElementById('vRelation').value.trim();
+<script>
+let currentPick = "";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQiZxUE6Q0HJzFUeEMU9Rudz9THuEiIULOX61O6NlGp4FcS3F-vH6QERs4trIeTgO_lA/exec";
 
-            if(!name || !rel || !currentPick) return alert("Please fill all details and pick Boy or Girl!");
+setTimeout(() => {
+ document.getElementById('intro-overlay').style.display='none';
+ document.getElementById('main-content').classList.remove('hidden');
+},3000);
 
-            try {
-                // Check if this name has already voted by fetching all votes from Google Sheets
-                const checkResponse = await fetch(SCRIPT_URL + '?action=getVotes');
-                const existingVotes = await checkResponse.json();
-                
-                // Check for duplicate name (case-insensitive)
-                const nameLower = name.toLowerCase();
-                const alreadyVoted = existingVotes.some(v => v.name.toLowerCase() === nameLower);
-                
-                if(alreadyVoted) {
-                    return alert("This name has already voted! Each person can only vote once.");
-                }
+function showPage(id){
+ document.querySelectorAll('main,section').forEach(e=>e.classList.add('hidden'));
+ document.getElementById(id).classList.remove('hidden');
+}
 
-                // Send vote to Google Sheets
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'vote',
-                        name: name,
-                        relation: rel,
-                        choice: currentPick
-                    })
-                });
+function pick(val){
+ currentPick=val;
+ btnBoy.classList.remove('selected-boy');
+ btnGirl.classList.remove('selected-girl');
+ val==='BOY'?btnBoy.classList.add('selected-boy'):btnGirl.classList.add('selected-girl');
+}
 
-                alert("Thank you! If you want to know the probability, please contact Admin.");
-                location.reload(); // Redirects back to dashboard as requested
-            } catch(error) {
-                alert("Error submitting vote. Please check your internet connection and try again.");
-                console.error('Vote error:', error);
-            }
-        }
+async function handleVote(){
+ const btn=document.getElementById('submitBtn');
+ const status=document.getElementById('submitStatus');
 
-        function doLogin() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-            if(u === "Rakshni" && p === "Dhakshan") {
-                renderAdmin();
-            } else {
-                alert("Wrong login!");
-            }
-        }
+ if(!vName.value || !vRelation.value || !currentPick){
+   alert("Fill all details");
+   return;
+ }
 
-        async function renderAdmin() {
-            showPage('admin-dashboard');
-            
-            try {
-                // Fetch votes from Google Sheets
-                const response = await fetch(SCRIPT_URL + '?action=getVotes');
-                const votes = await response.json();
-                
-                const list = document.getElementById('voterList');
-                list.innerHTML = "";
-                
-                let b = 0, g = 0;
-                votes.forEach(v => {
-                    if(v.choice === 'BOY') b++; else g++;
-                    list.innerHTML += `<tr class="border-b"><td class="p-4">${v.name}</td><td class="p-4">${v.relation}</td><td class="p-4 font-bold ${v.choice==='BOY'?'text-blue-500':'text-pink-500'}">${v.choice}</td></tr>`;
-                });
+ btn.disabled=true;
+ btn.innerText="Submitting...";
+ status.style.display="block";
 
-                if(votes.length > 0) {
-                    document.getElementById('pBoy').innerText = Math.round((b/votes.length)*100) + "%";
-                    document.getElementById('pGirl').innerText = Math.round((g/votes.length)*100) + "%";
-                }
-            } catch(error) {
-                alert("Error loading votes. Please check your internet connection.");
-                console.error('Load error:', error);
-            }
-        }
-    </script>
+ try{
+   const check=await fetch(SCRIPT_URL+'?action=getVotes');
+   const votes=await check.json();
+   if(votes.some(v=>v.name.toLowerCase()===vName.value.toLowerCase())){
+     alert("Already voted");
+     location.reload();
+     return;
+   }
+
+   await fetch(SCRIPT_URL,{
+     method:'POST',
+     mode:'no-cors',
+     body:JSON.stringify({action:'vote',name:vName.value,relation:vRelation.value,choice:currentPick})
+   });
+
+   alert("Vote submitted successfully 💖");
+   location.reload();
+ }catch(e){
+   alert("Network error");
+ }
+}
+</script>
 </body>
 </html>
