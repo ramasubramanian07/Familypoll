@@ -94,6 +94,7 @@
 
     <script>
         let currentPick = "";
+        const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE"; // Replace with your Google Apps Script Web App URL
 
         // Intro Timing
         setTimeout(() => { document.getElementById('intro-names').style.opacity = '1'; }, 500);
@@ -120,21 +121,44 @@
             else document.getElementById('btn-girl').classList.add('selected-girl');
         }
 
-        function handleVote() {
-            const name = document.getElementById('vName').value;
-            const rel = document.getElementById('vRelation').value;
+        async function handleVote() {
+            const name = document.getElementById('vName').value.trim();
+            const rel = document.getElementById('vRelation').value.trim();
 
             if(!name || !rel || !currentPick) return alert("Please fill all details and pick Boy or Girl!");
-            if(localStorage.getItem('voted_already')) return alert("You've already voted!");
 
-            // Save locally
-            let votes = JSON.parse(localStorage.getItem('db_votes') || "[]");
-            votes.push({ name, rel, choice: currentPick });
-            localStorage.setItem('db_votes', JSON.stringify(votes));
-            localStorage.setItem('voted_already', 'true');
+            try {
+                // Check if this name has already voted by fetching all votes from Google Sheets
+                const checkResponse = await fetch(SCRIPT_URL + '?action=getVotes');
+                const existingVotes = await checkResponse.json();
+                
+                // Check for duplicate name (case-insensitive)
+                const nameLower = name.toLowerCase();
+                const alreadyVoted = existingVotes.some(v => v.name.toLowerCase() === nameLower);
+                
+                if(alreadyVoted) {
+                    return alert("This name has already voted! Each person can only vote once.");
+                }
 
-            alert("Thank you! If you want to know the probability, please contact Admin.");
-            location.reload(); // Redirects back to dashboard as requested
+                // Send vote to Google Sheets
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'vote',
+                        name: name,
+                        relation: rel,
+                        choice: currentPick
+                    })
+                });
+
+                alert("Thank you! If you want to know the probability, please contact Admin.");
+                location.reload(); // Redirects back to dashboard as requested
+            } catch(error) {
+                alert("Error submitting vote. Please check your internet connection and try again.");
+                console.error('Vote error:', error);
+            }
         }
 
         function doLogin() {
@@ -147,21 +171,30 @@
             }
         }
 
-        function renderAdmin() {
+        async function renderAdmin() {
             showPage('admin-dashboard');
-            const list = document.getElementById('voterList');
-            const votes = JSON.parse(localStorage.getItem('db_votes') || "[]");
-            list.innerHTML = "";
             
-            let b = 0, g = 0;
-            votes.forEach(v => {
-                if(v.choice === 'BOY') b++; else g++;
-                list.innerHTML += `<tr class="border-b"><td class="p-4">${v.name}</td><td class="p-4">${v.rel}</td><td class="p-4 font-bold ${v.choice==='BOY'?'text-blue-500':'text-pink-500'}">${v.choice}</td></tr>`;
-            });
+            try {
+                // Fetch votes from Google Sheets
+                const response = await fetch(SCRIPT_URL + '?action=getVotes');
+                const votes = await response.json();
+                
+                const list = document.getElementById('voterList');
+                list.innerHTML = "";
+                
+                let b = 0, g = 0;
+                votes.forEach(v => {
+                    if(v.choice === 'BOY') b++; else g++;
+                    list.innerHTML += `<tr class="border-b"><td class="p-4">${v.name}</td><td class="p-4">${v.relation}</td><td class="p-4 font-bold ${v.choice==='BOY'?'text-blue-500':'text-pink-500'}">${v.choice}</td></tr>`;
+                });
 
-            if(votes.length > 0) {
-                document.getElementById('pBoy').innerText = Math.round((b/votes.length)*100) + "%";
-                document.getElementById('pGirl').innerText = Math.round((g/votes.length)*100) + "%";
+                if(votes.length > 0) {
+                    document.getElementById('pBoy').innerText = Math.round((b/votes.length)*100) + "%";
+                    document.getElementById('pGirl').innerText = Math.round((g/votes.length)*100) + "%";
+                }
+            } catch(error) {
+                alert("Error loading votes. Please check your internet connection.");
+                console.error('Load error:', error);
             }
         }
     </script>
