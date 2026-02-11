@@ -1,42 +1,162 @@
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  const data = JSON.parse(e.postData.contents);
-  
-  if(data.action === 'vote') {
-    // Add new vote to sheet
-    sheet.appendRow([data.name, data.relation, data.choice, new Date()]);
-    return ContentService.createTextOutput(JSON.stringify({success: true}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  if(data.action === 'getVotes') {
-    // Get all votes from sheet
-    const rows = sheet.getDataRange().getValues();
-    const votes = rows.slice(1).map(row => ({
-      name: row[0],
-      relation: row[1],
-      choice: row[2],
-      timestamp: row[3]
-    }));
-    return ContentService.createTextOutput(JSON.stringify(votes))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
+Slide 1: Title Slide
+Title: UUI: Simplifying the Telecom Universe
 
-function doGet(e) {
-  // Handle GET requests same as POST
-  if(e.parameter.action === 'getVotes') {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const rows = sheet.getDataRange().getValues();
-    const votes = rows.slice(1).map(row => ({
-      name: row[0],
-      relation: row[1],
-      choice: row[2],
-      timestamp: row[3]
-    }));
-    return ContentService.createTextOutput(JSON.stringify(votes))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  return ContentService.createTextOutput(JSON.stringify({error: 'Invalid action'}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+Subtitle: Unified User Interface & The Power of Canvas
+
+Presented by: [Your Name] – QA Test Engineer
+
+Visual: [Image: A clean, high-tech digital bridge connecting different nodes]
+
+Slide 2: Telecom 101 – The Nervous System
+Title: Understanding our Domain
+
+Content:
+
+Telecom isn't just about calls; it's about Connectivity.
+
+Managing millions of devices, towers, and data streams.
+
+The Goal: To make complex network data look simple for the user.
+
+Visual: [Image: A global map with glowing lines connecting cell towers]
+
+Slide 3: OSS vs. BSS – The "Pizza" Analogy
+Title: The Kitchen vs. The Cashier
+
+Content:
+
+BSS (Business Support): The Cashier. Handles the menu, the money, and the customer profile (Billing/Orders).
+
+OSS (Operations Support): The Kitchen. Handles the cooking and the delivery (Network health/Maintenance).
+
+UUI’s Place: We are an OSS tool used by the "Engineers in the Kitchen."
+
+Visual: [Image: Split screen showing a Customer App vs. a Technical Dashboard]
+
+Slide 4: UUI & Field Ops
+Title: Why Field Ops?
+
+Content:
+
+Field Ops: The engineers who maintain the physical and digital network.
+
+UUI provides the Single Pane of Glass for them to monitor towers and services.
+
+Without UUI, an engineer is lost in a "URL Jungle."
+
+Visual: [Image: An engineer in a safety vest holding a tablet in front of a telecom tower]
+
+Slide 5: The Canvas Concept & SSO
+Title: Canvas: The Hosting Mall
+
+Content:
+
+One URL: Canvas is the "Mall" that houses all our applications.
+
+SSO (Single Sign-On): Log in once, access everything.
+
+The Value: Eliminates "Password Fatigue" and saves hours of switching tabs.
+
+Visual: [Image: A single Master Key unlocking multiple digital doors]
+
+Slide 6: RBAC & AYS Tickets
+Title: Security & Role-Based Access (RBAC)
+
+Content:
+
+Not everyone sees everything: Access is restricted based on your job role.
+
+The AYS Workflow: 1. User needs backend access (e.g., UTE). 2. User raises an AYS Ticket. 3. Role is updated in the backend. 4. UUI automatically unlocks the tool for that user.
+
+Visual: [Image: A digital shield with a checklist or "Access Granted" stamp]
+
+Slide 7: Application Integration Types
+Title: How we bring Apps into the Mall
+
+Content Table:
+
+iFrame: Like a Window. You see the app without leaving Canvas.
+
+Link: Like a New Building. It opens a brand new browser tab.
+
+Dropdown Link: Like a Folder. Multiple tools organized in one menu.
+
+Single Link: Like a Shortcut. A fast-track path to one specific service.
+
+Visual: [Image: Four icons representing a Window, an External Arrow, a Folder, and a Lightning Bolt]
+
+Slide 8: Conclusion & QA Value
+Title: Quality Assurance: The Bridge
+
+Content:
+
+Our goal is a seamless user experience.
+
+We ensure that whether it’s an iFrame or an AYS role update, the system is Reliable, Secure, and Fast.
+
+Visual: [Image: A "Quality Approved" seal or a bridge connecting two points]
+
+
+
+
+////
+1. Telecom Domain: The "Invisible Giant"
+Start by acknowledging that Telecom is the nervous system of the world. It’s not just about phones; it’s about connectivity.
+
+The Goal: To move data from Point A to Point B as fast and securely as possible.
+
+The Reality: To do this, a telecom company needs to manage millions of hardware pieces (towers, cables) and millions of customers (billing, plans).
+
+2. OSS vs. BSS: The "Kitchen" and the "Counter"
+Use this analogy to make it stick. Imagine a Pizza Delivery Chain:
+
+BSS (Business Support Systems): This is the Customer App. It’s where the customer picks a topping, pays with a credit card, and gets a receipt. It handles the money and the profile.
+
+Real-time example: When you buy a 5G data pack on your service provider's app, you are interacting with BSS.
+
+OSS (Operation Support Systems): This is the Kitchen and the Delivery Bike. It’s where the chef checks if there is enough flour, cooks the pizza, and the driver finds the best route to your house. It handles the network and the technical health.
+
+Real-time example: If a cell tower goes down in a storm, the system that alerts the engineer to go fix it is the OSS.
+
+3. Where does UUI fit? (The Field Ops Connection)
+UUI (Unified User Interface) is the tool for the "Chefs" and "Drivers," not the customers.
+
+Why Field Ops? Field Operations (Field Ops) refers to the army of engineers who maintain the physical towers and network. They are "in the field."
+
+The Connection: UUI sits under Field Ops because it is the control panel these engineers use to monitor equipment, check tickets, and manage roles. It is an OSS tool because it helps run the network smoothly.
+
+4. The "Massive" Problem: The URL Jungle
+Before UUI/Canvas, an engineer’s life was a mess.
+
+The Old Way: To check a tower's health, you open URL A. To check the user's role, you open URL B. To check a ticket, you open URL C.
+
+The Result: 15 tabs open, 15 different passwords, and a very slow computer.
+
+The UUI Solution: "The Master Key"
+One URL: Canvas is the "Mall" that houses every shop.
+
+SSO (Single Sign-On): This is the most important feature. With SSO, you log in once (like using your Google ID to log into 50 different websites). You don't need to remember 10 passwords. Once you are in Canvas, you are "trusted" by all applications inside it.
+
+5. How Apps are Integrated (The "Mall" Analogy)
+When we add an application to UUI, we choose how it sits inside the "Mall." Use these natural examples:
+
+Integration Type	The Real-World Analogy	How it works in UUI
+iFrame	A Food Court Stall: You are inside the mall, you see the stall, and you eat right there.	The app opens inside the Canvas page. You never leave the main URL.
+Link	A Separate Boutique: You see a sign in the mall, but you have to walk out the back door to a separate building.	Clicking this opens a new browser tab entirely.
+Dropdown Link	A Department Store Menu: One door leads to "Electronics," "Clothing," and "Home" sections.	One button in the menu opens a list of 4-5 related sub-tools.
+Single Link	A "Fast Track" Door: A dedicated side-entrance for VIPs.	A direct, simple shortcut to one specific, frequently used backend service.
+6. Role Management & AYS Tickets
+Explain your specific QA knowledge here:
+
+"In UUI, we don't just give everyone access to everything. If an engineer needs to update a backend service via UTE, they raise an AYS Ticket. Once approved, we update their role in the backend, and UUI automatically 'unlocks' that specific tool for them. It’s like a digital security guard checking your ID at the door."
+
+Summary for your Closing:
+UUI is the "Single Pane of Glass" for Telecom engineers.
+
+It simplifies OSS complexity.
+
+It uses SSO to kill "Password Fatigue."
+
+It integrates tools via iFrame/Links to keep everything organized.
+
+Would you like me to create a 5-slide outline with specific titles and bullet points based on this content?
